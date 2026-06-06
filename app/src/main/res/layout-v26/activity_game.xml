@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright (c) 2026 Otto
+License: GPL-2.0-or-later (see LICENSE)
+-->
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gameRootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/orange_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Верхняя панель — портрет: кнопка пауза + название в одну строку,
+             счёт в следующей строке; ландшафт: одна строка всё вместе -->
+        <LinearLayout
+            android:id="@+id/topPanel"
+            tools:ignore="NestedWeights"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:orientation="vertical"
+            android:background="#44000000"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp">
+
+            <!-- Строка 1: кнопка паузы + название игры (только портрет) -->
+            <LinearLayout
+                android:id="@+id/topRowTitle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.8"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btnPause"
+                    tools:ignore="SmallSp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:text="@string/pause"
+                    android:textSize="8sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:background="@drawable/btn_control_bg"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginTop="3dp"
+                    android:elevation="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvGameTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/game_title"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    app:paddingEnd="16dp"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="6sp"
+                    app:autoSizeMaxTextSize="11sp"
+                    app:autoSizeStepGranularity="1sp"
+                    android:maxLines="1"
+                    tools:ignore="NestedWeights" />
+
+            </LinearLayout>
+
+            <!-- Строка 2: счёт (в портрете — только счёт без кнопки паузы) -->
+            <LinearLayout
+                android:id="@+id/topRowScore"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Кнопка паузы — видна только в ландшафте (в портрете перенесена выше) -->
+                <Button
+                    android:id="@+id/btnPauseLandscape"
+                    tools:ignore="SmallSp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:text="@string/pause"
+                    android:textSize="8sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:background="@drawable/btn_control_bg"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:layout_marginEnd="6dp"/>
+
+                <TextView
+                    android:id="@+id/tvScore"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/score_placeholder"
+                    android:textStyle="normal"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeMaxTextSize="11sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:maxLines="1"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:id="@+id/tvBest"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/best_placeholder"
+                    android:textStyle="normal"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeMaxTextSize="11sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:maxLines="1"
+                    android:includeFontPadding="false"/>
+
+                <TextView
+                    android:id="@+id/tvRecord"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/record_placeholder"
+                    android:textStyle="normal"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeMaxTextSize="11sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:maxLines="1"
+                    android:includeFontPadding="false"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Игровой холст -->
+        <com.example.stackattackkt.GameView
+            android:id="@+id/gameView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <!-- Кнопки управления -->
+        <LinearLayout
+            android:id="@+id/controlsPanel"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:orientation="horizontal"
+            android:background="@color/orange_dark"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btnLeft"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/btn_left"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:background="@drawable/btn_control_bg"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginStart="5dp"/>
+
+            <View
+                android:id="@+id/spacerLeftRight"
+                android:layout_width="5dp"
+                android:layout_height="1dp"/>
+
+            <Button
+                android:id="@+id/btnRight"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/btn_right"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:background="@drawable/btn_control_bg"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+
+            <View
+                android:id="@+id/spacerMiddle"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="0.2"/>
+
+            <Button
+                android:id="@+id/btnJump"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/btn_control_bg"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/btn_jump"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="5dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Оверлей паузы -->
+    <FrameLayout
+        android:id="@+id/pauseOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#77000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:id="@+id/pauseContent"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/orange_dark"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/tvPauseTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pause"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="20dp"/>
+
+            <Button
+                android:id="@+id/btnResumeOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/resume"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:background="@drawable/btn_menu_bg"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/btnMenuOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/menu"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:background="@drawable/btn_menu_bg"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- Оверлей Game Over -->
+    <FrameLayout
+        android:id="@+id/gameOverOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#77000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:id="@+id/gameOverContent"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/orange_dark"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/tvGameOverTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/game_over_title"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvGameOverScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/game_over_score_placeholder"
+                android:textSize="19sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="20dp"/>
+
+            <Button
+                android:id="@+id/btnPlayAgain"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/play_again"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:background="@drawable/btn_menu_bg"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/btnMenuGameOver"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/menu"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:background="@drawable/btn_menu_bg"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

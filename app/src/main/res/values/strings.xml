@@ -1,0 +1,59 @@
+<!--
+  Copyright (c) 2026 Otto
+  License: GPL-2.0-or-later (see LICENSE)
+-->
+
+<resources>
+    <string name="app_name">Stack Attack Kt</string>
+    <string name="game_title">STACK ATTACK KT</string>
+
+    <string name="play">ИГРАТЬ</string>
+    <string name="exit">ВЫХОД</string>
+    <string name="btn_left">◀</string>
+    <string name="btn_right">▶</string>
+    <string name="btn_jump">▲</string>
+
+    <string name="pause">ПАУЗА</string>
+    <string name="resume">ПРОДОЛЖИТЬ</string>
+    <string name="menu">В МЕНЮ</string>
+
+    <string name="score">Текущий счёт</string>
+    <string name="best">Последняя игра</string>
+    <string name="record">Рекорд</string>
+
+    <string name="score_value">Текущий счёт: %1$d</string>
+    <string name="best_value">Последняя игра: %1$d</string>
+    <string name="record_value">Рекорд: %1$d</string>
+
+    <string name="score_placeholder">Текущий счёт: 0</string>
+    <string name="best_placeholder">Последняя игра: 0</string>
+    <string name="record_placeholder">РЕКОРД: 0</string>
+    <string name="game_over_score_placeholder">Счёт: 0</string>
+
+    <string name="game_over_title">Игра окончена</string>
+    <string name="game_over_score">Счёт: %1$d</string>
+    <string name="play_again">Ещё раз</string>
+
+    <string name="settings">Настройки</string>
+    <string name="difficulty">Сложность</string>
+    <string name="description_label">Описание:</string>
+
+    <string name="diff_easy">ЛЕГКО</string>
+    <string name="diff_medium">СРЕДНЕ</string>
+    <string name="diff_hard">СЛОЖНО</string>
+    <string name="diff_extreme">ОЧЕНЬ СЛОЖНО</string>
+
+    <string name="diff_easy_desc">4 грейфера, стандартная скорость, можно толкать ящик в прыжке сбоку и передвигать по 3 ящика.</string>
+    <string name="diff_medium_desc">5 грейферов, скорость немного выше, можно толкать ящик в прыжке сбоку и передвигать по 2 ящика.</string>
+    <string name="diff_hard_desc">6 грейферов, скорость ещё выше, нельзя толкать ящик в прыжке, можно передвигать по 2 ящика.</string>
+    <string name="diff_extreme_desc">7 грейферов, высокая скорость, нельзя толкать ящик в прыжке, передвигать можно 1 ящик.</string>
+
+    <string name="orientation_title">Ориентация</string>
+    <string name="orientation_landscape">📱</string>
+    <string name="orientation_portrait">📱</string>
+    <string name="theme_title">Цвет темы</string>
+    <string name="back">← НАЗАД</string>
+
+    <string name="app_license">GNU GPL v2.0 (or later)</string>
+    <string name="app_author">Автор Otto</string>
+</resources>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright (c) 2026 Otto
+  License: GPL-2.0-or-later (see LICENSE)
+-->
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainRootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/orange_bg">
+
+    <!-- Кнопка настроек (шестерёнка) в правом верхнем углу -->
+    <ImageButton
+        android:id="@+id/btnSettings"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="12dp"
+        android:src="@drawable/ic_gear"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/settings"
+        android:padding="4dp"
+        android:scaleType="fitCenter"/>
+
+    <!-- Лицензия (левый верхний угол) -->
+    <TextView
+        android:id="@+id/tvLicense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_margin="8dp"
+        android:text="@string/app_license"
+        android:textSize="9sp"
+        android:textColor="@color/black"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
+        tools:ignore="SmallSp" />
+
+    <!-- Центральный контент -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:layout_marginBottom="8dp"
+            android:autoSizeMaxTextSize="48sp"
+            android:autoSizeMinTextSize="24sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="@string/game_title"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvRecord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="30dp"
+            android:text="@string/record_placeholder"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnPlay"
+            android:layout_width="260dp"
+            android:layout_height="72dp"
+            android:text="@string/play"
+            style="@style/BigButton"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btnExit"
+            android:layout_width="260dp"
+            android:layout_height="72dp"
+            android:text="@string/exit"
+            style="@style/BigButton"/>
+
+    </LinearLayout>
+
+    <!-- Версия (левый нижний угол) -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="8dp"
+        android:text="@string/app_version_dynamic"
+        android:textSize="9sp"
+        android:textColor="@color/black"
+        tools:ignore="SmallSp" />
+
+    <!-- Автор (правый нижний угол) -->
+    <TextView
+        android:id="@+id/tvAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="8dp"
+        android:text="@string/app_author"
+        android:textSize="9sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
+        tools:ignore="SmallSp" />
+
+</FrameLayout>
