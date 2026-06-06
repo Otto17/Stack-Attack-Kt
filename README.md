@@ -46,7 +46,7 @@
 | **Версия SDK при сборке (Compile)** | API 37 \[Android 17]                                                  |
 | **Система сборки**                  | Gradle + Каталог зависимостей Version Catalogs (`libs.versions.toml`) |
 | **Лицензия**                        | GPL-2.0-or-later (Проект полностью открыт)                            |
-| **Зеркала репозитория**             | [GitHub](https://github.com) • [GitFlic](https://gitflic.ru)          |
+| **Зеркала репозитория**             | [GitHub](https://github.com/Otto17/Stack-Attack-Kt) • [GitFlic](https://gitflic.ru/project/otto/stack-attack-kt)          |
 
 ---
 
