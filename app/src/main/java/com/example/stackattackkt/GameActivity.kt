@@ -390,27 +390,27 @@ class GameActivity : AppCompatActivity() {
         tvRecord.text = getString(R.string.record_value, allTimeRecord)
     }
 
-    // saveRecord Сохраняет лучший результат для текущей сложности
+    // saveRecord Сохраняет лучший результат для текущего режима сложности
     private fun saveRecord(record: Int) {
         getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .edit { putInt("best_record_${currentDifficulty.name}", record) }
+            .edit { putInt("best_record_${scoreKey()}", record) }
     }
 
-    // loadRecord Загружает рекорд из постоянного хранилища
+    // loadRecord Загружает рекорд из постоянного хранилища для текущего режима
     private fun loadRecord(): Int =
         getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .getInt("best_record_${currentDifficulty.name}", 0)
+            .getInt("best_record_${scoreKey()}", 0)
 
-    // saveLastScore Запоминает результат последней сессии
+    // saveLastScore Запоминает результат последней сессии для текущего режима
     private fun saveLastScore(score: Int) {
         getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .edit { putInt("last_score_${currentDifficulty.name}", score) }
+            .edit { putInt("last_score_${scoreKey()}", score) }
     }
 
-    // loadLastScore Возвращает счет предыдущей игры
+    // loadLastScore Возвращает счёт предыдущей игры для текущего режима
     private fun loadLastScore(): Int =
         getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .getInt("last_score_${currentDifficulty.name}", 0)
+            .getInt("last_score_${scoreKey()}", 0)
 
     // onResume Возобновляет работу активности
     override fun onResume() {
@@ -469,6 +469,12 @@ class GameActivity : AppCompatActivity() {
             Difficulty.MEDIUM
         }
     }
+
+    // scoreKey Возвращает ключ для сохранения очков в зависимости от активного режима:
+    // в кастомном режиме используется отдельный ключ "CUSTOM", иначе — имя сложности
+    private fun scoreKey(): String =
+        if (CustomDifficulty.isCustomMode(this)) "CUSTOM"
+        else currentDifficulty.name
 
     // applyDifficultyToView Применяет стандартную или кастомную сложность к игровому движку
     private fun applyDifficultyToView() {

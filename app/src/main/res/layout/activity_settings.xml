@@ -515,7 +515,7 @@ License: GPL-2.0-or-later (see LICENSE)
 
             </LinearLayout>
 
-            <!-- Блок кастомного режима: динамическая подсказка -->
+            <!-- Блок кастомного режима -->
             <LinearLayout
                 android:id="@+id/panelCustomRight"
                 android:layout_width="match_parent"
@@ -523,6 +523,17 @@ License: GPL-2.0-or-later (see LICENSE)
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:visibility="gone">
+
+                <!-- Рекорд кастомного режима -->
+                <TextView
+                    android:id="@+id/tvCustomRecord"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"/>
 
                 <TextView
                     android:id="@+id/tvCustomTitle"
@@ -532,16 +543,9 @@ License: GPL-2.0-or-later (see LICENSE)
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:gravity="center"
-                    android:layout_marginBottom="6dp"/>
+                    android:layout_marginBottom="4dp"/>
 
-                <View
-                    android:id="@+id/customDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/black"
-                    android:layout_marginBottom="8dp"/>
-
+                <!-- Название уровня сложности -->
                 <TextView
                     android:id="@+id/tvCustomDiffLabel"
                     android:layout_width="match_parent"
@@ -550,8 +554,9 @@ License: GPL-2.0-or-later (see LICENSE)
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:layout_marginBottom="6dp"/>
+                    android:layout_marginBottom="4dp"/>
 
+                <!-- Текстовая подсказка -->
                 <TextView
                     android:id="@+id/tvCustomDiffHint"
                     android:layout_width="match_parent"
@@ -559,7 +564,13 @@ License: GPL-2.0-or-later (see LICENSE)
                     android:layout_weight="1"
                     android:textSize="13sp"
                     android:textColor="@color/black"
-                    android:gravity="top|center_horizontal"/>
+                    android:gravity="top"/>
+
+                <!-- Невидимый разделитель снизу для выравнивания -->
+                <View
+                    android:id="@+id/customDivider"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"/>
 
             </LinearLayout>
 

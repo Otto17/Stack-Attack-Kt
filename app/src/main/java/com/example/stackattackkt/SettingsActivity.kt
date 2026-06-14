@@ -60,6 +60,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var btnSpeed5: Button
     private lateinit var tvCustomDiffLabel: TextView
     private lateinit var tvCustomDiffHint: TextView
+    private lateinit var tvCustomRecord: TextView
     private lateinit var leftColumn: LinearLayout
 
     private var selected: Difficulty = Difficulty.MEDIUM
@@ -117,6 +118,7 @@ class SettingsActivity : AppCompatActivity() {
         btnSpeed5 = findViewById(R.id.btnSpeed5)
         tvCustomDiffLabel = findViewById(R.id.tvCustomDiffLabel)
         tvCustomDiffHint = findViewById(R.id.tvCustomDiffHint)
+        tvCustomRecord = findViewById(R.id.tvCustomRecord)
 
         selected = loadDifficulty()
         currentTheme = loadTheme()
@@ -303,6 +305,12 @@ class SettingsActivity : AppCompatActivity() {
         tvCustomDiffHint.text = hint
         tvCustomDiffLabel.setTextColor(currentTheme.textStroke)
         tvCustomDiffHint.setTextColor(currentTheme.textStroke)
+
+        // Рекорд кастомного режима
+        val customRecord = getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
+            .getInt("best_record_CUSTOM", 0)
+        tvCustomRecord.text = getString(R.string.record_value, customRecord)
+        tvCustomRecord.setTextColor(currentTheme.textStroke)
     }
 
     // styleToggle Выделяет активную кнопку в группе акцентным цветом

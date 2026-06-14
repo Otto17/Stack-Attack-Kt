@@ -78,12 +78,13 @@ class MainActivity : AppCompatActivity() {
         applyTheme()
     }
 
-    // loadCurrentRecord Извлекает рекорд для текущего выбранного уровня сложности
+    // loadCurrentRecord Извлекает рекорд для активного режима:
+    // в кастомном режиме берёт ключ "CUSTOM", иначе — имя выбранной сложности
     private fun loadCurrentRecord(): Int {
         val prefs = getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-        val diffName =
-            prefs.getString("difficulty", Difficulty.MEDIUM.name) ?: Difficulty.MEDIUM.name
-        return prefs.getInt("best_record_$diffName", 0)
+        val key = if (prefs.getBoolean("use_custom_difficulty", false)) "CUSTOM"
+        else prefs.getString("difficulty", Difficulty.MEDIUM.name) ?: Difficulty.MEDIUM.name
+        return prefs.getInt("best_record_$key", 0)
     }
 
     // loadTheme Получает активную цветовую схему из постоянного хранилища

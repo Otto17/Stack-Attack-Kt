@@ -54,7 +54,7 @@
     <string name="mode_custom">Свой</string>
 
     <!-- Кастомный режим: метки параметров -->
-    <string name="custom_diff_title">Приблизительная сложность</string>
+    <string name="custom_diff_title">Приблизительная сложность:</string>
     <string name="custom_push_jump_label">Толкать ящик в прыжке:</string>
     <string name="custom_push_jump_on">✔ Да</string>
     <string name="custom_push_jump_off">✖ Нет</string>
