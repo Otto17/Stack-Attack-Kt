@@ -14,21 +14,22 @@ License: GPL-2.0-or-later (see LICENSE)
     android:background="@color/orange_bg"
     android:padding="10dp">
 
-    <!-- Горизонтальная панель: Сложность слева, Описание+Темы справа -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <!-- Левая колонка: Сложность + Назад -->
+        <!-- Левая колонка: переключатель режима + содержимое + Назад -->
         <LinearLayout
+            android:id="@+id/leftColumn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.8"
             android:orientation="vertical"
             android:paddingEnd="8dp">
 
+            <!-- Заголовок "Сложность" -->
             <TextView
                 android:id="@+id/tvDiffTitle"
                 android:layout_width="match_parent"
@@ -38,60 +39,420 @@ License: GPL-2.0-or-later (see LICENSE)
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:gravity="center"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="4dp"/>
 
-            <Button
-                android:id="@+id/btnDiffEasy"
+            <!-- Подпись переключателя -->
+            <TextView
+                android:id="@+id/tvModeSwitchLabel"
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:text="@string/diff_easy"
-                android:textSize="13sp"
-                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:text="@string/mode_switch_label"
+                android:textSize="11sp"
                 android:textColor="@color/black"
-                android:layout_marginBottom="4dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                android:gravity="center"
+                android:layout_marginBottom="3dp"/>
 
-            <Button
-                android:id="@+id/btnDiffMedium"
+            <!-- Кнопки переключения режима -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:text="@string/diff_medium"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="4dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp">
 
-            <Button
-                android:id="@+id/btnDiffHard"
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:text="@string/diff_hard"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="4dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                <Button
+                    android:id="@+id/btnModeStandard"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/mode_standard"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:layout_marginEnd="3dp"/>
 
-            <Button
-                android:id="@+id/btnDiffExtreme"
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:text="@string/diff_extreme"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                <Button
+                    android:id="@+id/btnModeCustom"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/mode_custom"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"/>
 
+            </LinearLayout>
+
+            <!-- Разделитель под переключателем -->
             <View
-                android:layout_width="1dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:id="@+id/modeDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                android:layout_marginBottom="4dp"/>
 
+            <!-- Панель стандартных уровней — обёрнута в ScrollView -->
+            <ScrollView
+                android:id="@+id/panelStandard"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btnDiffEasy"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:text="@string/diff_easy"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="4dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"/>
+
+                    <Button
+                        android:id="@+id/btnDiffMedium"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:text="@string/diff_medium"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="4dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"/>
+
+                    <Button
+                        android:id="@+id/btnDiffHard"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:text="@string/diff_hard"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="4dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"/>
+
+                    <Button
+                        android:id="@+id/btnDiffExtreme"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:text="@string/diff_extreme"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <!-- Панель кастомных параметров -->
+            <ScrollView
+                android:id="@+id/panelCustom"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:scrollbars="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Прыжок-толчок -->
+                    <TextView
+                        android:id="@+id/tvPushJumpLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/custom_push_jump_label"
+                        android:textSize="11sp"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="3dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="34dp"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="6dp">
+
+                        <Button
+                            android:id="@+id/btnPushJumpOn"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/custom_push_jump_on"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="3dp"/>
+
+                        <Button
+                            android:id="@+id/btnPushJumpOff"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/custom_push_jump_off"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"/>
+
+                    </LinearLayout>
+
+                    <!-- Цепочка ящиков -->
+                    <TextView
+                        android:id="@+id/tvChainLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/custom_chain_label"
+                        android:textSize="11sp"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="3dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="34dp"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="6dp">
+
+                        <Button
+                            android:id="@+id/btnChain1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="1"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="3dp"/>
+
+                        <Button
+                            android:id="@+id/btnChain2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="2"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="3dp"/>
+
+                        <Button
+                            android:id="@+id/btnChain3"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="3"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"/>
+
+                    </LinearLayout>
+
+                    <!-- Количество грейферов -->
+                    <TextView
+                        android:id="@+id/tvCranesLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/custom_cranes_label"
+                        android:textSize="11sp"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="3dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="34dp"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="6dp">
+
+                        <Button
+                            android:id="@+id/btnCranes4"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="4"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnCranes5"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="5"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnCranes6"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="6"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnCranes7"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="7"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnCranes8"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="8"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnCranes9"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="9"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"/>
+
+                    </LinearLayout>
+
+                    <!-- Скорость грейферов -->
+                    <TextView
+                        android:id="@+id/tvSpeedLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/custom_speed_label"
+                        android:textSize="11sp"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="3dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="34dp"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="6dp">
+
+                        <Button
+                            android:id="@+id/btnSpeed1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="1"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnSpeed2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="2"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnSpeed3"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="3"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnSpeed4"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="4"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnSpeed5"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="5"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <!-- Кнопка Назад -->
             <Button
                 android:id="@+id/btnSettingsBack"
                 android:layout_width="match_parent"
@@ -114,8 +475,9 @@ License: GPL-2.0-or-later (see LICENSE)
             android:orientation="vertical"
             android:paddingStart="8dp">
 
-            <!-- Рекорд + Описание -->
+            <!-- Блок стандартного режима: рекорд + описание -->
             <LinearLayout
+                android:id="@+id/panelStandardRight"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -150,6 +512,54 @@ License: GPL-2.0-or-later (see LICENSE)
                     android:textSize="14sp"
                     android:textColor="@color/black"
                     android:gravity="top"/>
+
+            </LinearLayout>
+
+            <!-- Блок кастомного режима: динамическая подсказка -->
+            <LinearLayout
+                android:id="@+id/panelCustomRight"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvCustomTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/custom_diff_title"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:layout_marginBottom="6dp"/>
+
+                <View
+                    android:id="@+id/customDivider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvCustomDiffLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:layout_marginBottom="6dp"/>
+
+                <TextView
+                    android:id="@+id/tvCustomDiffHint"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:gravity="top|center_horizontal"/>
 
             </LinearLayout>
 
@@ -209,7 +619,6 @@ License: GPL-2.0-or-later (see LICENSE)
                 android:orientation="horizontal"
                 android:gravity="center">
 
-                <!-- Кнопка горизонтальной ориентации -->
                 <FrameLayout
                     android:layout_width="0dp"
                     android:layout_height="42dp"
@@ -237,7 +646,6 @@ License: GPL-2.0-or-later (see LICENSE)
 
                 </FrameLayout>
 
-                <!-- Кнопка вертикальной ориентации -->
                 <FrameLayout
                     android:layout_width="0dp"
                     android:layout_height="42dp"

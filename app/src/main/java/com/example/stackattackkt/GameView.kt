@@ -124,6 +124,42 @@ class GameView @JvmOverloads constructor(
         difficulty = d
     }
 
+    private var customDifficulty: CustomDifficulty? = null
+
+    // setCustomDifficulty Переключает движок на использование кастомных параметров
+    fun setCustomDifficulty(c: CustomDifficulty) {
+        customDifficulty = c
+    }
+
+    // clearCustomDifficulty Возвращает движок к стандартной Difficulty
+    fun clearCustomDifficulty() {
+        customDifficulty = null
+    }
+
+    // effectiveMaxCranes Возвращает актуальный лимит грейферов с учётом режима
+    private val effectiveMaxCranes: Int
+        get() = customDifficulty?.maxCranes ?: difficulty.maxCranes
+
+    // effectiveCraneSpeedMin Возвращает нижний порог скорости с учётом режима
+    private val effectiveCraneSpeedMin: Float
+        get() = customDifficulty?.craneSpeedMin ?: difficulty.craneSpeedMin
+
+    // effectiveCraneSpeedMax Возвращает верхний порог скорости с учётом режима
+    private val effectiveCraneSpeedMax: Float
+        get() = customDifficulty?.craneSpeedMax ?: difficulty.craneSpeedMax
+
+    // effectiveCanPushInJump Возвращает флаг прыжка-толчка с учётом режима
+    private val effectiveCanPushInJump: Boolean
+        get() = customDifficulty?.canPushInJump ?: difficulty.canPushInJump
+
+    // effectiveCanPushChain Возвращает флаг цепочки с учётом режима
+    private val effectiveCanPushChain: Boolean
+        get() = customDifficulty?.canPushChain ?: difficulty.canPushChain
+
+    // effectiveMaxPushChain Возвращает лимит цепочки с учётом режима
+    private val effectiveMaxPushChain: Int
+        get() = customDifficulty?.maxPushChain ?: difficulty.maxPushChain
+
     // Кисти
     private val bgP = Paint().apply { color = "#FF6600".toColorInt() }
     private val gndP = Paint().apply { color = "#CC5200".toColorInt() }
@@ -313,7 +349,7 @@ class GameView @JvmOverloads constructor(
 
     // spawnCranes Заполняет список грейферов согласно сложности
     private fun spawnCranes() {
-        repeat(difficulty.maxCranes) { i ->
+        repeat(effectiveMaxCranes) { i ->
             val spd = rndSpeed()
             val fl = i % 2 == 0
             val startX = if (fl) -bsz * 2 - i * sw * 0.40f
@@ -329,7 +365,7 @@ class GameView @JvmOverloads constructor(
     // rndSpeed Вычисляет случайную скорость с нелинейным распределением для динамики
     private fun rndSpeed(): Float {
         val t = Random.nextFloat()
-        return difficulty.craneSpeedMin + t * t * (difficulty.craneSpeedMax - difficulty.craneSpeedMin)
+        return effectiveCraneSpeedMin + t * t * (effectiveCraneSpeedMax - effectiveCraneSpeedMin)
     }
 
 
@@ -343,11 +379,11 @@ class GameView @JvmOverloads constructor(
         val edgeColR2 = gridCols - 4
         val edgeColR1 = gridCols - 2
 
-        // В портретном режиме усиливаем защиту краёв
+        // Уменьшение вероятности падения ящика по краям экрана
         val isPortrait = sh > sw
-        val chanceL1 = if (isPortrait) 0.04f else 0.02f // Крайняя левая: портрет 4%, ландшафт 2%
-        val chanceL2 = if (isPortrait) 0.02f else 0.01f // Вторая слева: портрет 2%, ландшафт 1%
-        val chanceR1 = if (isPortrait) 0.05f else 0.04f // Крайняя правая: портрет 5%, ландшафт 4%
+        val chanceL1 = if (isPortrait) 0.06f else 0.05f // Крайняя левая: портрет 6%, ландшафт 5%
+        val chanceL2 = if (isPortrait) 0.03f else 0.02f // Вторая слева: портрет 3%, ландшафт 2%
+        val chanceR1 = if (isPortrait) 0.06f else 0.05f // Крайняя правая: портрет 6%, ландшафт 5%
         val chanceR2 = if (isPortrait) 0.03f else 0.03f // Вторая справа: портрет 3%, ландшафт 3%
 
         when (col) {
@@ -451,7 +487,7 @@ class GameView @JvmOverloads constructor(
             if (gone) {
                 rem.add(c)
                 // Новый кран добавляем только если не превышен лимит
-                if (cranes.size - rem.size + add.size < difficulty.maxCranes) {
+                if (cranes.size - rem.size + add.size < effectiveMaxCranes) {
                     val spd = rndSpeed()
                     val fl = c.speed > 0
                     val others = cranes.filter { it !== c }.map { it.cx }
@@ -618,7 +654,7 @@ class GameView @JvmOverloads constructor(
             if (!vOverSide) continue
 
             // Прекращает игру при попытке толкнуть падающий ящик в прыжке на высокой сложности
-            if (!ponGround && !difficulty.canPushInJump) {
+            if (!ponGround && !effectiveCanPushInJump) {
                 gameRunning = false; post { onGameOver?.invoke(score) }; return
             }
 
@@ -706,7 +742,7 @@ class GameView @JvmOverloads constructor(
             if (c + 1 >= gridCols) break
             if (grid[c] == 0) break
             chainCols.add(c)
-            if (chainCols.size >= difficulty.maxPushChain) break
+            if (chainCols.size >= effectiveMaxPushChain) break
             val next = c + dir * 2
 
             // Следующий ящик мешает только если он на том же уровне или выше
@@ -726,7 +762,7 @@ class GameView @JvmOverloads constructor(
         if (chainCols.isEmpty()) return false
 
         // На EXTREME нельзя толкать цепочку из 2+ ящиков
-        if (!difficulty.canPushChain && chainCols.size > 1) return false
+        if (!effectiveCanPushChain && chainCols.size > 1) return false
 
         // Высота верхнего ящика первого элемента цепи (это и есть "уровень толчка")
         val pushRow = ((grid[chainCols.first()] / 2) - 1) * 2

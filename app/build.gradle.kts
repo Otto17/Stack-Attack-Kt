@@ -10,8 +10,8 @@ android {
         applicationId = "com.example.stackattackkt"
         minSdk = 23     // Минимум Android 6.0 (Marshmallow)
         targetSdk = 36  // Оптимизировано под Android 16 (Baklava)
-        versionCode = 1
-        versionName = "05.06.26"
+        versionCode = 2
+        versionName = "14.06.26"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Передача versionName в ресурсы

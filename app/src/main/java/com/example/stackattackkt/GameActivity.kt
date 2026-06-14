@@ -94,7 +94,7 @@ class GameActivity : AppCompatActivity() {
         setupGameCallbacks()
         setupButtons()
 
-        gameView.setDifficulty(currentDifficulty)
+        applyDifficultyToView()
 
         // Ждём когда layout реально отрисуется с правильными размерами,
         // затем применяем adjustForOrientation() и запускаем игру
@@ -358,7 +358,7 @@ class GameActivity : AppCompatActivity() {
             currentDifficulty = loadDifficulty()
             allTimeRecord = loadRecord()
             bestThisSession = loadLastScore()
-            gameView.setDifficulty(currentDifficulty)
+            applyDifficultyToView()
             updateScoreUI(0)
             gameView.startGame()
         }
@@ -467,6 +467,19 @@ class GameActivity : AppCompatActivity() {
             Difficulty.valueOf(name)
         } catch (_: Exception) {
             Difficulty.MEDIUM
+        }
+    }
+
+    // applyDifficultyToView Применяет стандартную или кастомную сложность к игровому движку
+    private fun applyDifficultyToView() {
+        if (CustomDifficulty.isCustomMode(this)) {
+            val custom = CustomDifficulty.load(this)
+            gameView.clearCustomDifficulty()
+            gameView.setDifficulty(currentDifficulty) // Базовый fallback
+            gameView.setCustomDifficulty(custom)
+        } else {
+            gameView.clearCustomDifficulty()
+            gameView.setDifficulty(currentDifficulty)
         }
     }
 }

@@ -31,9 +31,42 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var btnOrientLandscape: Button
     private lateinit var btnOrientPortrait: Button
 
+    // Переключатель режима сложности
+    private lateinit var btnModeStandard: Button
+    private lateinit var btnModeCustom: Button
+
+    // Панели режимов
+    private lateinit var panelStandard: android.widget.ScrollView
+    private lateinit var panelCustom: android.widget.ScrollView
+    private lateinit var panelStandardRight: LinearLayout
+    private lateinit var panelCustomRight: LinearLayout
+
+    // Кастомные элементы управления
+    private lateinit var btnPushJumpOn: Button
+    private lateinit var btnPushJumpOff: Button
+    private lateinit var btnChain1: Button
+    private lateinit var btnChain2: Button
+    private lateinit var btnChain3: Button
+    private lateinit var btnCranes4: Button
+    private lateinit var btnCranes5: Button
+    private lateinit var btnCranes6: Button
+    private lateinit var btnCranes7: Button
+    private lateinit var btnCranes8: Button
+    private lateinit var btnCranes9: Button
+    private lateinit var btnSpeed1: Button
+    private lateinit var btnSpeed2: Button
+    private lateinit var btnSpeed3: Button
+    private lateinit var btnSpeed4: Button
+    private lateinit var btnSpeed5: Button
+    private lateinit var tvCustomDiffLabel: TextView
+    private lateinit var tvCustomDiffHint: TextView
+    private lateinit var leftColumn: LinearLayout
+
     private var selected: Difficulty = Difficulty.MEDIUM
     private var currentTheme: ColorTheme = ColorTheme.CLASSIC
     private var isLandscape: Boolean = true
+    private var useCustomMode: Boolean = false
+    private var customParams: CustomDifficulty = CustomDifficulty.DEFAULTS
 
     // onCreate Инициализирует интерфейс настроек и восстанавливает сохраненное состояние параметров
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,14 +89,60 @@ class SettingsActivity : AppCompatActivity() {
         btnOrientLandscape = findViewById(R.id.btnOrientLandscape)
         btnOrientPortrait = findViewById(R.id.btnOrientPortrait)
 
+        // Переключатели режима
+        btnModeStandard = findViewById(R.id.btnModeStandard)
+        btnModeCustom = findViewById(R.id.btnModeCustom)
+        panelStandard = findViewById(R.id.panelStandard)
+        panelCustom = findViewById(R.id.panelCustom)
+        panelStandardRight = findViewById(R.id.panelStandardRight)
+        panelCustomRight = findViewById(R.id.panelCustomRight)
+        leftColumn = findViewById(R.id.leftColumn)
+
+        // Кастомные кнопки
+        btnPushJumpOn = findViewById(R.id.btnPushJumpOn)
+        btnPushJumpOff = findViewById(R.id.btnPushJumpOff)
+        btnChain1 = findViewById(R.id.btnChain1)
+        btnChain2 = findViewById(R.id.btnChain2)
+        btnChain3 = findViewById(R.id.btnChain3)
+        btnCranes4 = findViewById(R.id.btnCranes4)
+        btnCranes5 = findViewById(R.id.btnCranes5)
+        btnCranes6 = findViewById(R.id.btnCranes6)
+        btnCranes7 = findViewById(R.id.btnCranes7)
+        btnCranes8 = findViewById(R.id.btnCranes8)
+        btnCranes9 = findViewById(R.id.btnCranes9)
+        btnSpeed1 = findViewById(R.id.btnSpeed1)
+        btnSpeed2 = findViewById(R.id.btnSpeed2)
+        btnSpeed3 = findViewById(R.id.btnSpeed3)
+        btnSpeed4 = findViewById(R.id.btnSpeed4)
+        btnSpeed5 = findViewById(R.id.btnSpeed5)
+        tvCustomDiffLabel = findViewById(R.id.tvCustomDiffLabel)
+        tvCustomDiffHint = findViewById(R.id.tvCustomDiffHint)
+
         selected = loadDifficulty()
         currentTheme = loadTheme()
         isLandscape = OrientationManager.load(this)
+        useCustomMode = CustomDifficulty.isCustomMode(this)
+        customParams = CustomDifficulty.load(this)
 
         createThemeSquares()
         applyTheme()
         updateDiffUI()
         updateOrientUI()
+        updateModeUI()
+        updateCustomUI()
+        adjustColumnsForOrientation()
+
+        // Переключатели режима сложности
+        btnModeStandard.setOnClickListener {
+            useCustomMode = false
+            CustomDifficulty.setCustomMode(this, false)
+            updateModeUI()
+        }
+        btnModeCustom.setOnClickListener {
+            useCustomMode = true
+            CustomDifficulty.setCustomMode(this, true)
+            updateModeUI()
+        }
 
         btnEasy.setOnClickListener { select(Difficulty.EASY) }
         btnMedium.setOnClickListener { select(Difficulty.MEDIUM) }
@@ -71,14 +150,73 @@ class SettingsActivity : AppCompatActivity() {
         btnExtreme.setOnClickListener { select(Difficulty.EXTREME) }
         btnBack.setOnClickListener { finish() }
 
+        // Кастомные слушатели: прыжок
+        btnPushJumpOn.setOnClickListener {
+            customParams = customParams.copy(canPushInJump = true)
+            saveAndUpdateCustom()
+        }
+        btnPushJumpOff.setOnClickListener {
+            customParams = customParams.copy(canPushInJump = false)
+            saveAndUpdateCustom()
+        }
+
+        // Цепочка ящиков
+        btnChain1.setOnClickListener {
+            customParams = customParams.copy(maxPushChain = 1)
+            saveAndUpdateCustom()
+        }
+        btnChain2.setOnClickListener {
+            customParams = customParams.copy(maxPushChain = 2)
+            saveAndUpdateCustom()
+        }
+        btnChain3.setOnClickListener {
+            customParams = customParams.copy(maxPushChain = 3)
+            saveAndUpdateCustom()
+        }
+
+        // Количество грейферов
+        btnCranes4.setOnClickListener {
+            customParams = customParams.copy(maxCranes = 4); saveAndUpdateCustom()
+        }
+        btnCranes5.setOnClickListener {
+            customParams = customParams.copy(maxCranes = 5); saveAndUpdateCustom()
+        }
+        btnCranes6.setOnClickListener {
+            customParams = customParams.copy(maxCranes = 6); saveAndUpdateCustom()
+        }
+        btnCranes7.setOnClickListener {
+            customParams = customParams.copy(maxCranes = 7); saveAndUpdateCustom()
+        }
+        btnCranes8.setOnClickListener {
+            customParams = customParams.copy(maxCranes = 8); saveAndUpdateCustom()
+        }
+        btnCranes9.setOnClickListener {
+            customParams = customParams.copy(maxCranes = 9); saveAndUpdateCustom()
+        }
+
+        // Скорость грейферов
+        btnSpeed1.setOnClickListener {
+            customParams = customParams.copy(craneSpeedLevel = 1); saveAndUpdateCustom()
+        }
+        btnSpeed2.setOnClickListener {
+            customParams = customParams.copy(craneSpeedLevel = 2); saveAndUpdateCustom()
+        }
+        btnSpeed3.setOnClickListener {
+            customParams = customParams.copy(craneSpeedLevel = 3); saveAndUpdateCustom()
+        }
+        btnSpeed4.setOnClickListener {
+            customParams = customParams.copy(craneSpeedLevel = 4); saveAndUpdateCustom()
+        }
+        btnSpeed5.setOnClickListener {
+            customParams = customParams.copy(craneSpeedLevel = 5); saveAndUpdateCustom()
+        }
+
         btnOrientLandscape.setOnClickListener {
             isLandscape = true
             OrientationManager.save(this, true)
             OrientationManager.apply(this)
-            // Обновляет якорь — SplashActivity в стеке
             (application as App).applyOrientationToAll(true)
             updateOrientUI()
-            // Перерисовывает сетку тем с задержкой для корректного расчета новых размеров
             themeContainer.post { createThemeSquares() }
         }
 
@@ -86,18 +224,104 @@ class SettingsActivity : AppCompatActivity() {
             isLandscape = false
             OrientationManager.save(this, false)
             OrientationManager.apply(this)
-            // Обновляет якорь — SplashActivity в стеке
             (application as App).applyOrientationToAll(false)
             updateOrientUI()
             themeContainer.post { createThemeSquares() }
         }
     }
 
+    // saveAndUpdateCustom Сохраняет кастомные параметры и обновляет UI
+    private fun saveAndUpdateCustom() {
+        CustomDifficulty.save(this, customParams)
+        updateCustomUI()
+    }
+
+    // updateModeUI Переключает видимость панелей и подсвечивает активный режим
+    private fun updateModeUI() {
+        if (useCustomMode) {
+            btnModeStandard.background =
+                makeRoundedDrawable(currentTheme.secondaryBg, currentTheme.textStroke)
+            btnModeStandard.alpha = 0.85f
+            btnModeCustom.background =
+                makeRoundedDrawable(currentTheme.accent, currentTheme.textStroke)
+            btnModeCustom.alpha = 1f
+            // Левая колонка: скрываем стандартные уровни, показываем кастомные параметры
+            panelStandard.visibility = View.GONE
+            panelCustom.visibility = View.VISIBLE
+            // Правая колонка: скрываем описание уровня, показываем подсказку сложности
+            panelStandardRight.visibility = View.GONE
+            panelCustomRight.visibility = View.VISIBLE
+        } else {
+            btnModeStandard.background =
+                makeRoundedDrawable(currentTheme.accent, currentTheme.textStroke)
+            btnModeStandard.alpha = 1f
+            btnModeCustom.background =
+                makeRoundedDrawable(currentTheme.secondaryBg, currentTheme.textStroke)
+            btnModeCustom.alpha = 0.85f
+            // Левая колонка: показываем стандартные уровни, скрываем кастомные параметры
+            panelStandard.visibility = View.VISIBLE
+            panelCustom.visibility = View.GONE
+            // Правая колонка: показываем описание уровня, скрываем подсказку сложности
+            panelStandardRight.visibility = View.VISIBLE
+            panelCustomRight.visibility = View.GONE
+        }
+        listOf(btnModeStandard, btnModeCustom).forEach { it.setTextColor(currentTheme.textStroke) }
+    }
+
+    // updateCustomUI Обновляет состояние кнопок и подсказку в кастомном режиме
+    private fun updateCustomUI() {
+        // Прыжок
+        styleToggle(btnPushJumpOn, customParams.canPushInJump)
+        styleToggle(btnPushJumpOff, !customParams.canPushInJump)
+
+        // Цепочка
+        styleToggle(btnChain1, customParams.maxPushChain == 1)
+        styleToggle(btnChain2, customParams.maxPushChain == 2)
+        styleToggle(btnChain3, customParams.maxPushChain == 3)
+
+        // Грейферы
+        val craneButtons = mapOf(
+            4 to btnCranes4, 5 to btnCranes5, 6 to btnCranes6,
+            7 to btnCranes7, 8 to btnCranes8, 9 to btnCranes9
+        )
+        craneButtons.forEach { (count, btn) ->
+            styleToggle(btn, customParams.maxCranes == count)
+        }
+
+        // Скорость
+        val speedButtons = mapOf(
+            1 to btnSpeed1, 2 to btnSpeed2, 3 to btnSpeed3,
+            4 to btnSpeed4, 5 to btnSpeed5
+        )
+        speedButtons.forEach { (level, btn) ->
+            styleToggle(btn, customParams.craneSpeedLevel == level)
+        }
+
+        // Динамическая подсказка
+        val (label, hint) = CustomDifficulty.calcDifficultyLabel(customParams)
+        tvCustomDiffLabel.text = label
+        tvCustomDiffHint.text = hint
+        tvCustomDiffLabel.setTextColor(currentTheme.textStroke)
+        tvCustomDiffHint.setTextColor(currentTheme.textStroke)
+    }
+
+    // styleToggle Выделяет активную кнопку в группе акцентным цветом
+    private fun styleToggle(btn: Button, isActive: Boolean) {
+        if (isActive) {
+            btn.background = makeRoundedDrawable(currentTheme.accent, currentTheme.textStroke)
+            btn.alpha = 1f
+        } else {
+            btn.background = makeRoundedDrawable(currentTheme.secondaryBg, currentTheme.textStroke)
+            btn.alpha = 0.85f
+        }
+        btn.setTextColor(currentTheme.textStroke)
+    }
+
     // onConfigurationChanged Пересчитывает геометрию элементов управления при смене параметров экрана
     override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
         super.onConfigurationChanged(newConfig)
-        // Перестраивает квадратики под новую ориентацию
         themeContainer.post { createThemeSquares() }
+        adjustColumnsForOrientation()
         hideSystemUI()
     }
 
@@ -134,7 +358,6 @@ class SettingsActivity : AppCompatActivity() {
         val isPortrait = screenH > screenW
 
         val themes = ColorTheme.entries
-        // Группирует темы в два ряда для удобства в портретном режиме
         val itemsPerRow = if (isPortrait) (themes.size + 1) / 2 else themes.size
 
         var rowLayout: LinearLayout? = null
@@ -191,7 +414,6 @@ class SettingsActivity : AppCompatActivity() {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = 6f * resources.displayMetrics.density
             setColor(theme.primaryBg)
-            // Добавляет жирную белую рамку для индикации активного выбора
             if (selected) {
                 setStroke((4 * resources.displayMetrics.density).toInt(), Color.WHITE)
             } else {
@@ -230,8 +452,22 @@ class SettingsActivity : AppCompatActivity() {
         findViewById<View>(R.id.themeDivider).setBackgroundColor(currentTheme.textStroke)
         findViewById<View>(R.id.orientDivider).setBackgroundColor(currentTheme.textStroke)
 
+        // Заголовки кастомного блока
+        listOf(
+            R.id.tvCustomTitle, R.id.tvModeSwitchLabel,
+            R.id.tvPushJumpLabel, R.id.tvChainLabel,
+            R.id.tvCranesLabel, R.id.tvSpeedLabel
+        ).forEach {
+            findViewById<TextView>(it)?.setTextColor(currentTheme.textStroke)
+        }
+        listOf(R.id.customDivider, R.id.modeDivider).forEach {
+            findViewById<View>(it)?.setBackgroundColor(currentTheme.textStroke)
+        }
+
         updateDiffUI()
         updateOrientUI()
+        updateModeUI()
+        updateCustomUI()
     }
 
     // select Применяет выбранный уровень сложности
@@ -334,5 +570,32 @@ class SettingsActivity : AppCompatActivity() {
                             or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     )
         }
+    }
+
+    // adjustColumnsForOrientation Подбирает ширину колонок под текущую ориентацию
+    private fun adjustColumnsForOrientation() {
+        val screenW = resources.displayMetrics.widthPixels
+        val screenH = resources.displayMetrics.heightPixels
+        val isPortrait = screenH > screenW
+
+        val leftWeight = if (isPortrait) 1.1f else 0.8f
+        val rightWeight = if (isPortrait) 1.0f else 1.2f
+
+        (leftColumn.layoutParams as LinearLayout.LayoutParams).apply {
+            weight = leftWeight
+        }.also { leftColumn.layoutParams = it }
+
+        // Правая колонка — соседний элемент в том же родителе
+        val rightColumn = leftColumn.parent?.let {
+            (it as? LinearLayout)?.getChildAt(1)
+        } as? LinearLayout
+        rightColumn?.let {
+            (it.layoutParams as LinearLayout.LayoutParams).apply {
+                weight = rightWeight
+            }.also { lp -> it.layoutParams = lp }
+        }
+
+        leftColumn.requestLayout()
+        rightColumn?.requestLayout()
     }
 }

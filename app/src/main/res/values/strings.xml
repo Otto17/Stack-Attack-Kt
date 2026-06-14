@@ -48,6 +48,20 @@
     <string name="diff_hard_desc">6 грейферов, скорость ещё выше, нельзя толкать ящик в прыжке, можно передвигать по 2 ящика.</string>
     <string name="diff_extreme_desc">7 грейферов, высокая скорость, нельзя толкать ящик в прыжке, передвигать можно 1 ящик.</string>
 
+    <!-- Режим сложности: переключатель -->
+    <string name="mode_switch_label">Режим настройки:</string>
+    <string name="mode_standard">Стандартный</string>
+    <string name="mode_custom">Свой</string>
+
+    <!-- Кастомный режим: метки параметров -->
+    <string name="custom_diff_title">Приблизительная сложность</string>
+    <string name="custom_push_jump_label">Толкать ящик в прыжке:</string>
+    <string name="custom_push_jump_on">✔ Да</string>
+    <string name="custom_push_jump_off">✖ Нет</string>
+    <string name="custom_chain_label">Ящиков в цепочке (макс.):</string>
+    <string name="custom_cranes_label">Грейферов на экране:</string>
+    <string name="custom_speed_label">Скорость грейферов:</string>
+
     <string name="orientation_title">Ориентация</string>
     <string name="orientation_landscape">📱</string>
     <string name="orientation_portrait">📱</string>
