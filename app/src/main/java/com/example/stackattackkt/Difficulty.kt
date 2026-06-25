@@ -10,10 +10,10 @@ enum class Difficulty {
     // maxCranes Задает предельное количество активных грейферов на экране
     val maxCranes: Int
         get() = when (this) {
-            EASY -> 4
-            MEDIUM -> 5
-            HARD -> 6
-            EXTREME -> 7
+            EASY -> 5
+            MEDIUM -> 6
+            HARD -> 7
+            EXTREME -> 8
         }
 
     // craneSpeedMin Устанавливает нижний порог скорости движения грейферов
@@ -22,7 +22,7 @@ enum class Difficulty {
             EASY -> 1.5f
             MEDIUM -> 2.0f
             HARD -> 2.8f
-            EXTREME -> 3.8f
+            EXTREME -> 3.9f
         }
 
     // craneSpeedMax Устанавливает верхний порог скорости движения грейферов
@@ -31,7 +31,7 @@ enum class Difficulty {
             EASY -> 5.5f
             MEDIUM -> 7.0f
             HARD -> 8.5f
-            EXTREME -> 10.5f
+            EXTREME -> 11.0f
         }
 
     // canPushInJump Определяет возможность взаимодействия с ящиком во время прыжк

@@ -30,6 +30,18 @@
     <string name="record_placeholder">РЕКОРД: 0</string>
     <string name="game_over_score_placeholder">Счёт: 0</string>
 
+    <!-- Рекорд с указанием сложности — Стандартный режим -->
+    <string name="record_difficulty_value">Рекорд (%1$s): %2$d</string>
+
+    <!-- Рекорд с указанием сложности — Свой режим -->
+    <string name="record_custom_value">Рекорд - Свой режим (%1$s): %2$d</string>
+
+    <!-- Названия сложностей для отображения в скобках -->
+    <string name="diff_label_easy">легко</string>
+    <string name="diff_label_medium">средне</string>
+    <string name="diff_label_hard">сложно</string>
+    <string name="diff_label_extreme">очень сложно</string>
+
     <string name="game_over_title">Игра окончена</string>
     <string name="game_over_score">Счёт: %1$d</string>
     <string name="play_again">Ещё раз</string>
@@ -43,10 +55,10 @@
     <string name="diff_hard">СЛОЖНО</string>
     <string name="diff_extreme">ОЧЕНЬ СЛОЖНО</string>
 
-    <string name="diff_easy_desc">4 грейфера, стандартная скорость, можно толкать ящик в прыжке сбоку и передвигать по 3 ящика.</string>
-    <string name="diff_medium_desc">5 грейферов, скорость немного выше, можно толкать ящик в прыжке сбоку и передвигать по 2 ящика.</string>
-    <string name="diff_hard_desc">6 грейферов, скорость ещё выше, нельзя толкать ящик в прыжке, можно передвигать по 2 ящика.</string>
-    <string name="diff_extreme_desc">7 грейферов, высокая скорость, нельзя толкать ящик в прыжке, передвигать можно 1 ящик.</string>
+    <string name="diff_easy_desc">5 грейферов, стандартная скорость, можно толкать ящик в прыжке сбоку и передвигать по 3 ящика.</string>
+    <string name="diff_medium_desc">6 грейферов, скорость немного выше, можно толкать ящик в прыжке сбоку и передвигать по 2 ящика.</string>
+    <string name="diff_hard_desc">7 грейферов, скорость ещё выше, нельзя толкать ящик в прыжке, можно передвигать по 2 ящика.</string>
+    <string name="diff_extreme_desc">8 грейферов, высокая скорость, нельзя толкать ящик в прыжке, передвигать можно 1 ящик.</string>
 
     <!-- Режим сложности: переключатель -->
     <string name="mode_switch_label">Режим настройки:</string>

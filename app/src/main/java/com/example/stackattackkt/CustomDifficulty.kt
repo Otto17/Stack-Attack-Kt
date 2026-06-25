@@ -9,35 +9,34 @@ import androidx.core.content.edit
 // CustomDifficulty Хранит параметры пользовательской настройки сложности
 data class CustomDifficulty(
     val canPushInJump: Boolean,   // Разрешено ли толкать ящик в прыжке
-    val maxPushChain: Int,        // Максимальное число толкаемых ящиков (1..3)
-    val maxCranes: Int,           // Максимум грейферов на экране (4..9)
-    val craneSpeedLevel: Int      // Уровень скорости грейферов (1..5)
+    val maxPushChain: Int,        // Максимальное число толкаемых ящиков
+    val maxCranes: Int,           // Максимум грейферов на экране
+    val craneSpeedLevel: Int      // Уровень скорости грейферов
 ) {
     // craneSpeedMin Нижний порог скорости в зависимости от уровня
     val craneSpeedMin: Float
         get() = when (craneSpeedLevel) {
-            1 -> 0.8f
-            2 -> 1.5f
-            3 -> 2.0f
-            4 -> 2.8f
-            5 -> 3.8f
-            else -> 2.0f
+            1 -> 0.9f;
+            2 -> 1.7f;
+            3 -> 2.4f;
+            4 -> 3.1f;
+            5 -> 4.7f;
+            else -> 2.4f
         }
 
     // craneSpeedMax Верхний порог скорости в зависимости от уровня
     val craneSpeedMax: Float
         get() = when (craneSpeedLevel) {
-            1 -> 3.0f
-            2 -> 5.5f
-            3 -> 7.0f
-            4 -> 8.5f
-            5 -> 10.5f
-            else -> 7.0f
+            1 -> 3.1f;
+            2 -> 5.7f;
+            3 -> 7.4f;
+            4 -> 8.9f;
+            5 -> 11.0f;
+            else -> 7.4f
         }
 
     // canPushChain Разрешает толкание цепочки ящиков если лимит больше 1
-    val canPushChain: Boolean
-        get() = maxPushChain > 1
+    val canPushChain: Boolean get() = maxPushChain > 1
 
     companion object {
         // DEFAULTS Параметры по умолчанию (средний уровнь сложности)
@@ -93,29 +92,19 @@ data class CustomDifficulty(
 
             // Прыжок: нельзя толкать — сложнее (+2)
             if (!custom.canPushInJump) score += 2
+            score += when (custom.maxPushChain) {
+                1 -> 3; 2 -> 1; 3 -> 0; else -> 0
+            }
 
             // Цепочка: чем меньше ящиков, тем сложнее
-            score += when (custom.maxPushChain) {
-                1 -> 3
-                2 -> 1
-                3 -> 0
-                else -> 0
+            score += when {
+                custom.maxCranes <= 4 -> 0; custom.maxCranes <= 5 -> 1
+                custom.maxCranes <= 6 -> 2; custom.maxCranes <= 7 -> 3
+                custom.maxCranes <= 8 -> 4; else -> 5
             }
 
             // Грейферы: чем больше, тем сложнее
-            score += when {
-                custom.maxCranes <= 4 -> 0
-                custom.maxCranes <= 5 -> 1
-                custom.maxCranes <= 6 -> 2
-                custom.maxCranes <= 7 -> 3
-                custom.maxCranes <= 8 -> 4
-                else -> 5
-            }
-
-            // Скорость: чем выше, тем сложнее
-            score += custom.craneSpeedLevel - 1  // 0..4
-
-            // Итоговый label по сумме баллов (0..14)
+            score += custom.craneSpeedLevel - 1
             return when {
                 score <= 1  -> Pair("😴 Скучно",       "Даже бабушка справится одной рукой, попивая чай другой")
                 score <= 3  -> Pair("😊 Легко",         "Здесь проигрывают только легенды. Причём случайно")
@@ -123,6 +112,34 @@ data class CustomDifficulty(
                 score <= 8  -> Pair("😤 Сложно",        "Придётся включить мозг и отложить бутерброд в сторонку")
                 score <= 11 -> Pair("😨 Очень сложно",  "Рекорд? Какой рекорд? Выжить бы! Но ты ведь не сдашься?")
                 else        -> Pair("💀 Кошмар",        "Это безумие! Ну нахер....")
+            }
+        }
+
+        // calcDifficultyKey Возвращает ключ для сохранения рекорда по метке сложности
+        fun calcDifficultyKey(custom: CustomDifficulty): String {
+            val (label, _) = calcDifficultyLabel(custom)
+            return when {
+                label.contains("Скучно") -> "CUSTOM_BORING"
+                label.contains("Легко") -> "CUSTOM_EASY"
+                label.contains("Средне") -> "CUSTOM_MEDIUM"
+                label.contains("Сложно") && !label.contains("Очень") -> "CUSTOM_HARD"
+                label.contains("Очень сложно") -> "CUSTOM_VHARD"
+                label.contains("Кошмар") -> "CUSTOM_NIGHTMARE"
+                else -> "CUSTOM_MEDIUM"
+            }
+        }
+
+        // calcDifficultyShortName Возвращает короткое название для отображения на главном экране
+        fun calcDifficultyShortName(custom: CustomDifficulty): String {
+            val (label, _) = calcDifficultyLabel(custom)
+            return when {
+                label.contains("Скучно") -> "скучно"
+                label.contains("Легко") -> "легко"
+                label.contains("Средне") -> "средне"
+                label.contains("Сложно") && !label.contains("Очень") -> "сложно"
+                label.contains("Очень сложно") -> "очень сложно"
+                label.contains("Кошмар") -> "кошмар"
+                else -> "средне"
             }
         }
     }

@@ -32,7 +32,15 @@ enum class BoxPattern {
     STRIPES_V,    // Вертикальные полосы
     DIAMOND,      // Ромб
     DOTS,         // Четыре точки по углам
-    ZIGZAG        // Зигзаг
+    ZIGZAG,       // Зигзаг
+    CIRCLE,       // Окружность с точкой в центре
+    TRIANGLE,     // Треугольник
+    GRID,         // Решётка (сетка)
+    SPIRAL,       // Спираль
+    WAVES,        // Две синусоидальные волны
+    LIGHTNING,    // Молния
+    STAR,         // Звезда
+    CORNERS       // Уголки по четырём углам
 }
 
 // BoxAnim Содержит данные для плавного перемещения ящика в сетке
@@ -369,42 +377,26 @@ class GameView @JvmOverloads constructor(
     }
 
 
-    // randomDropX Выбирает случайную колонку для сброса, защищая края игрового поля
+    // randomDropX Выбирает колонку со слабым учётом высоты стопок — появляются и башни, и ямы, но без крайностей
     private fun randomDropX(): Float {
-        val raw = Random.nextFloat() * sw
-        val col = (xToCol(raw) / 2) * 2
+        if (gridCols == 0) return sw / 2f
 
-        val edgeColL1 = 0
-        val edgeColL2 = 2
-        val edgeColR2 = gridCols - 4
-        val edgeColR1 = gridCols - 2
+        val cols = (0 until gridCols step 2).toList()
+        if (cols.isEmpty()) return sw / 2f
 
-        // Уменьшение вероятности падения ящика по краям экрана
-        val isPortrait = sh > sw
-        val chanceL1 = if (isPortrait) 0.06f else 0.05f // Крайняя левая: портрет 6%, ландшафт 5%
-        val chanceL2 = if (isPortrait) 0.03f else 0.02f // Вторая слева: портрет 3%, ландшафт 2%
-        val chanceR1 = if (isPortrait) 0.06f else 0.05f // Крайняя правая: портрет 6%, ландшафт 5%
-        val chanceR2 = if (isPortrait) 0.03f else 0.03f // Вторая справа: портрет 3%, ландшафт 3%
-
-        when (col) {
-            edgeColL1 -> {
-                if (Random.nextFloat() < chanceL1) return randomDropX()
-            }
-
-            edgeColL2 -> {
-                if (Random.nextFloat() < chanceL2) return randomDropX()
-            }
-
-            edgeColR1 -> {
-                if (Random.nextFloat() < chanceR1) return randomDropX()
-            }
-
-            edgeColR2 -> {
-                if (Random.nextFloat() < chanceR2) return randomDropX()
-            }
+        // 96% времени — чистая случайность (башни и ямы)
+        // 4% времени — выбор в самую низкую колонку
+        if (Random.nextFloat() < 0.96f) {
+            val col = cols[Random.nextInt(cols.size)]
+            return colLeft(col) + bsz / 2f
         }
 
-        return raw
+        // Выбор одной из самых низких колонок
+        val heights = cols.map { grid[it] }
+        val minH = heights.minOrNull() ?: 0
+        val lowCols = cols.filterIndexed { i, _ -> heights[i] == minH }
+        val col = lowCols[Random.nextInt(lowCols.size)]
+        return colLeft(col) + bsz / 2f
     }
 
     // startLoop Запускает фоновый поток для стабильной частоты обновления кадров
@@ -1003,6 +995,132 @@ class GameView @JvmOverloads constructor(
                     lineTo(ir, cy)
                 }
                 canvas.drawPath(path2, patP)
+            }
+
+            BoxPattern.CIRCLE -> {
+                // Окружность с точкой в центре
+                val r2 = (ir - il) * 0.36f
+                val r3 = (ir - il) * 0.07f
+                canvas.drawCircle(cx, cy, r2, patFillP)
+                canvas.drawCircle(cx, cy, r2, patP)
+                canvas.drawCircle(cx, cy, r3, patFillP)
+                canvas.drawCircle(cx, cy, r3, patP)
+            }
+
+            BoxPattern.TRIANGLE -> {
+                // Треугольник вписанный в ящик
+                val path = Path().apply {
+                    moveTo(cx, it2)
+                    lineTo(ir, ib)
+                    lineTo(il, ib)
+                    close()
+                }
+                canvas.drawPath(path, patFillP)
+                canvas.drawPath(path, patP)
+            }
+
+            BoxPattern.GRID -> {
+                // Решётка 3x3
+                val stepX = (ir - il) / 3f
+                val stepY = (ib - it2) / 3f
+                canvas.drawLine(il + stepX, it2, il + stepX, ib, patP)
+                canvas.drawLine(il + stepX * 2f, it2, il + stepX * 2f, ib, patP)
+                canvas.drawLine(il, it2 + stepY, ir, it2 + stepY, patP)
+                canvas.drawLine(il, it2 + stepY * 2f, ir, it2 + stepY * 2f, patP)
+            }
+
+            BoxPattern.SPIRAL -> {
+                // Спираль — рисуется как многоугольник с нарастающим радиусом
+                val steps = 120
+                val maxR = (ir - il) * 0.48f
+                val minR = (ir - il) * 0.05f
+                val path = Path()
+                for (i in 0..steps) {
+                    val t = i.toFloat() / steps
+                    val angle = (t * Math.PI * 4 - Math.PI / 2).toFloat()
+                    val r = minR + t * (maxR - minR)
+                    val px2 = cx + r * kotlin.math.cos(angle)
+                    val py2 = cy + r * kotlin.math.sin(angle)
+                    if (i == 0) path.moveTo(px2, py2) else path.lineTo(px2, py2)
+                }
+                canvas.drawPath(path, patP)
+            }
+
+            BoxPattern.WAVES -> {
+                // Две синусоидальные волны друг над другом
+                val segments = 24
+                val waveH = (ib - it2) * 0.14f
+                val y1 = cy - (ib - it2) * 0.16f
+                val y2 = cy + (ib - it2) * 0.16f
+                val path1 = Path()
+                val path2 = Path()
+                for (i in 0..segments) {
+                    val t = i.toFloat() / segments
+                    val x = il + t * (ir - il)
+                    val sinV = kotlin.math.sin(t * Math.PI * 2).toFloat()
+                    val yy1 = y1 + sinV * waveH
+                    val yy2 = y2 + sinV * waveH
+                    if (i == 0) {
+                        path1.moveTo(x, yy1)
+                        path2.moveTo(x, yy2)
+                    } else {
+                        path1.lineTo(x, yy1)
+                        path2.lineTo(x, yy2)
+                    }
+                }
+                canvas.drawPath(path1, patP)
+                canvas.drawPath(path2, patP)
+            }
+
+            BoxPattern.LIGHTNING -> {
+                // Молния
+                val path = Path().apply {
+                    moveTo(cx + (ir - il) * 0.35f, it2)
+                    lineTo(cx - (ir - il) * 0.30f, cy - (ib - it2) * 0.02f)
+                    lineTo(cx + (ir - il) * 0.30f, cy - (ib - it2) * 0.02f)
+                    lineTo(cx - (ir - il) * 0.35f, ib)
+                    lineTo(cx + (ir - il) * 0.30f, cy + (ib - it2) * 0.02f)
+                    lineTo(cx - (ir - il) * 0.30f, cy + (ib - it2) * 0.02f)
+                    close()
+                }
+                canvas.drawPath(path, patFillP)
+                canvas.drawPath(path, patP)
+            }
+
+            BoxPattern.STAR -> {
+                // Пятиконечная звезда
+                val path = Path()
+                val r2 = (ir - il) * 0.50f
+                val r3 = (ir - il) * 0.20f
+                val centerY = cy + (ib - it2) * 0.05f  // Смещение вниз на 5%
+                val points = 5
+                for (i in 0 until points * 2) {
+                    val angle = (Math.PI * i / points - Math.PI / 2).toFloat()
+                    val r = if (i % 2 == 0) r2 else r3
+                    val px2 = cx + r * kotlin.math.cos(angle)
+                    val py2 = centerY + r * kotlin.math.sin(angle)
+                    if (i == 0) path.moveTo(px2, py2) else path.lineTo(px2, py2)
+                }
+                path.close()
+                canvas.drawPath(path, patFillP)
+                canvas.drawPath(path, patP)
+            }
+
+            BoxPattern.CORNERS -> {
+                // Уголки по четырём углам
+                val s = (ir - il) * 0.28f
+                // Левый верхний
+                canvas.drawLine(il, it2, il + s, it2, patP)
+                canvas.drawLine(il, it2, il, it2 + s, patP)
+                // Правый верхний
+                canvas.drawLine(ir, it2, ir - s, it2, patP)
+                canvas.drawLine(ir, it2, ir, it2 + s, patP)
+                // Левый нижний
+                canvas.drawLine(il, ib, il + s, ib, patP)
+                canvas.drawLine(il, ib, il, ib - s, patP)
+                // Правый нижний
+                canvas.drawLine(ir, ib, ir - s, ib, patP)
+                canvas.drawLine(ir, ib, ir, ib - s, patP)
             }
         }
     }

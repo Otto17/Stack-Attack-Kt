@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         val btnSettings: ImageButton = findViewById(R.id.btnSettings)
         val tvAuthor: TextView = findViewById(R.id.tvAuthor)
 
-        tvRecord.text = getString(R.string.record_value, loadCurrentRecord())
+        tvRecord.text = buildRecordText()
 
         btnPlay.setOnClickListener {
             startActivity(Intent(this, GameActivity::class.java))
@@ -72,19 +72,56 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         OrientationManager.apply(this)
         val tvRecord: TextView = findViewById(R.id.tvRecord)
-        tvRecord.text = getString(R.string.record_value, loadCurrentRecord())
+        tvRecord.text = buildRecordText()
         hideSystemUI()
         currentTheme = loadTheme()
         applyTheme()
     }
 
-    // loadCurrentRecord Извлекает рекорд для активного режима:
-    // в кастомном режиме берёт ключ "CUSTOM", иначе — имя выбранной сложности
+    // loadCurrentRecord Извлекает рекорд для активного режима с учётом уровня сложности
     private fun loadCurrentRecord(): Int {
         val prefs = getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-        val key = if (prefs.getBoolean("use_custom_difficulty", false)) "CUSTOM"
-        else prefs.getString("difficulty", Difficulty.MEDIUM.name) ?: Difficulty.MEDIUM.name
-        return prefs.getInt("best_record_$key", 0)
+        val isCustom = prefs.getBoolean("use_custom_difficulty", false)
+        return if (isCustom) {
+            val custom = CustomDifficulty.load(this)
+            val key = CustomDifficulty.calcDifficultyKey(custom)
+            prefs.getInt("best_record_$key", 0)
+        } else {
+            val diffName = prefs.getString("difficulty", Difficulty.MEDIUM.name)
+                ?: Difficulty.MEDIUM.name
+            prefs.getInt("best_record_$diffName", 0)
+        }
+    }
+
+    // buildRecordText Формирует строку рекорда с указанием режима и сложности для отображения в меню
+    private fun buildRecordText(): String {
+        val prefs = getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
+        val isCustom = prefs.getBoolean("use_custom_difficulty", false)
+        return if (isCustom) {
+            val custom = CustomDifficulty.load(this)
+            val key = CustomDifficulty.calcDifficultyKey(custom)
+            val record = prefs.getInt("best_record_$key", 0)
+            val diffName = CustomDifficulty.calcDifficultyShortName(custom)
+            getString(R.string.record_custom_value, diffName, record)
+        } else {
+            val diffName = prefs.getString("difficulty", Difficulty.MEDIUM.name)
+                ?: Difficulty.MEDIUM.name
+            val diff = try {
+                Difficulty.valueOf(diffName)
+            } catch (_: Exception) {
+                Difficulty.MEDIUM
+            }
+            val record = prefs.getInt("best_record_${diff.name}", 0)
+            val diffLabel = getString(
+                when (diff) {
+                    Difficulty.EASY -> R.string.diff_label_easy
+                    Difficulty.MEDIUM -> R.string.diff_label_medium
+                    Difficulty.HARD -> R.string.diff_label_hard
+                    Difficulty.EXTREME -> R.string.diff_label_extreme
+                }
+            )
+            getString(R.string.record_difficulty_value, diffLabel, record)
+        }
     }
 
     // loadTheme Получает активную цветовую схему из постоянного хранилища

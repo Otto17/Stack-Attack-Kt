@@ -306,10 +306,12 @@ class SettingsActivity : AppCompatActivity() {
         tvCustomDiffLabel.setTextColor(currentTheme.textStroke)
         tvCustomDiffHint.setTextColor(currentTheme.textStroke)
 
-        // Рекорд кастомного режима
+        // Рекорд кастомного режима — зависит от текущих параметров сложности
+        val customKey = CustomDifficulty.calcDifficultyKey(customParams)
         val customRecord = getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .getInt("best_record_CUSTOM", 0)
-        tvCustomRecord.text = getString(R.string.record_value, customRecord)
+            .getInt("best_record_$customKey", 0)
+        val customDiffName = CustomDifficulty.calcDifficultyShortName(customParams)
+        tvCustomRecord.text = getString(R.string.record_custom_value, customDiffName, customRecord)
         tvCustomRecord.setTextColor(currentTheme.textStroke)
     }
 
@@ -366,7 +368,7 @@ class SettingsActivity : AppCompatActivity() {
         val isPortrait = screenH > screenW
 
         val themes = ColorTheme.entries
-        val itemsPerRow = if (isPortrait) (themes.size + 1) / 2 else themes.size
+        val itemsPerRow = if (isPortrait) 4 else 6
 
         var rowLayout: LinearLayout? = null
         themes.forEachIndexed { index, theme ->
@@ -405,7 +407,7 @@ class SettingsActivity : AppCompatActivity() {
         val screenW = resources.displayMetrics.widthPixels
         val screenH = resources.displayMetrics.heightPixels
         val isPortrait = screenH > screenW
-        val itemsPerRow = if (isPortrait) (themes.size + 1) / 2 else themes.size
+        val itemsPerRow = if (isPortrait) 4 else 6
 
         themes.forEachIndexed { index, theme ->
             val rowIndex = index / itemsPerRow
@@ -516,7 +518,15 @@ class SettingsActivity : AppCompatActivity() {
             }
         )
 
-        tvDiffRecord.text = getString(R.string.record_value, loadRecordForDifficulty(selected))
+        val diffLabel = getString(
+            when (selected) {
+                Difficulty.EASY -> R.string.diff_label_easy
+                Difficulty.MEDIUM -> R.string.diff_label_medium
+                Difficulty.HARD -> R.string.diff_label_hard
+                Difficulty.EXTREME -> R.string.diff_label_extreme
+            }
+        )
+        tvDiffRecord.text = getString(R.string.record_difficulty_value, diffLabel, loadRecordForDifficulty(selected))
     }
 
     // saveDifficulty Сохраняет выбор сложности

@@ -99,22 +99,21 @@ class GameActivity : AppCompatActivity() {
         // Ждём когда layout реально отрисуется с правильными размерами,
         // затем применяем adjustForOrientation() и запускаем игру
         val rootView = findViewById<FrameLayout>(R.id.gameRootLayout)
-        rootView.viewTreeObserver.addOnGlobalLayoutListener(
-            object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    // Использует размеры только после завершения прохода компоновки View
-                    rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        rootView.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                // Использует размеры только после завершения прохода компоновки View
+                rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                    adjustForOrientation()
+                adjustForOrientation()
 
-                    if (!gameStarted) {
-                        gameStarted = true
-                        gameView.setBestScore(allTimeRecord)
-                        gameView.startGame()
-                    }
+                if (!gameStarted) {
+                    gameStarted = true
+                    gameView.setBestScore(allTimeRecord)
+                    gameView.startGame()
                 }
             }
-        )
+        })
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -141,10 +140,9 @@ class GameActivity : AppCompatActivity() {
         val spacerMiddle = findViewById<View>(R.id.spacerMiddle)
 
         if (portrait) {
-            topPanel.layoutParams =
-                (topPanel.layoutParams as LinearLayout.LayoutParams).apply {
-                    height = (50 * dp).toInt()
-                }
+            topPanel.layoutParams = (topPanel.layoutParams as LinearLayout.LayoutParams).apply {
+                height = (50 * dp).toInt()
+            }
             topRowTitle.visibility = View.VISIBLE
             btnPauseLandscape.visibility = View.GONE
 
@@ -154,8 +152,7 @@ class GameActivity : AppCompatActivity() {
                     topMargin = 0
                 }
             controlsPanel.setPadding(
-                (4 * dp).toInt(), (4 * dp).toInt(),
-                (4 * dp).toInt(), (4 * dp).toInt()
+                (4 * dp).toInt(), (4 * dp).toInt(), (4 * dp).toInt(), (4 * dp).toInt()
             )
             (spacerMiddle.layoutParams as LinearLayout.LayoutParams).apply {
                 weight = 0.1f
@@ -167,10 +164,9 @@ class GameActivity : AppCompatActivity() {
             (btnJump.layoutParams as LinearLayout.LayoutParams).weight = 1f
 
         } else {
-            topPanel.layoutParams =
-                (topPanel.layoutParams as LinearLayout.LayoutParams).apply {
-                    height = (32 * dp).toInt()
-                }
+            topPanel.layoutParams = (topPanel.layoutParams as LinearLayout.LayoutParams).apply {
+                height = (32 * dp).toInt()
+            }
             topRowTitle.visibility = View.GONE
             btnPauseLandscape.visibility = View.VISIBLE
 
@@ -180,8 +176,7 @@ class GameActivity : AppCompatActivity() {
                     topMargin = (-10 * dp).toInt()
                 }
             controlsPanel.setPadding(
-                (5 * dp).toInt(), (5 * dp).toInt(),
-                (5 * dp).toInt(), (5 * dp).toInt()
+                (5 * dp).toInt(), (5 * dp).toInt(), (5 * dp).toInt(), (5 * dp).toInt()
             )
             (spacerMiddle.layoutParams as LinearLayout.LayoutParams).apply {
                 weight = 0.2f
@@ -203,8 +198,8 @@ class GameActivity : AppCompatActivity() {
 
     // loadTheme Извлекает сохраненную тему оформления из настроек
     private fun loadTheme(): ColorTheme {
-        val ordinal = getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .getInt("color_theme", 0)
+        val ordinal =
+            getSharedPreferences("stack_attack_prefs", MODE_PRIVATE).getInt("color_theme", 0)
         return ColorTheme.fromOrdinal(ordinal)
     }
 
@@ -258,8 +253,10 @@ class GameActivity : AppCompatActivity() {
     }
 
     // makeRoundedDrawable Создает графический объект со скругленными углами и обводкой
-    private fun makeRoundedDrawable(bgColor: Int, strokeColor: Int):
-            android.graphics.drawable.GradientDrawable {
+    private fun makeRoundedDrawable(
+        bgColor: Int,
+        strokeColor: Int
+    ): android.graphics.drawable.GradientDrawable {
         return android.graphics.drawable.GradientDrawable().apply {
             shape = android.graphics.drawable.GradientDrawable.RECTANGLE
             cornerRadius = 4f * resources.displayMetrics.density
@@ -377,9 +374,7 @@ class GameActivity : AppCompatActivity() {
         }
         gameView.stopGame()
         startActivity(
-            Intent(this, MainActivity::class.java)
-                .apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP }
-        )
+            Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP })
         finish()
     }
 
@@ -392,25 +387,32 @@ class GameActivity : AppCompatActivity() {
 
     // saveRecord Сохраняет лучший результат для текущего режима сложности
     private fun saveRecord(record: Int) {
-        getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .edit { putInt("best_record_${scoreKey()}", record) }
+        getSharedPreferences(
+            "stack_attack_prefs",
+            MODE_PRIVATE
+        ).edit { putInt("best_record_${scoreKey()}", record) }
     }
 
     // loadRecord Загружает рекорд из постоянного хранилища для текущего режима
-    private fun loadRecord(): Int =
-        getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .getInt("best_record_${scoreKey()}", 0)
+    private fun loadRecord(): Int = getSharedPreferences("stack_attack_prefs", MODE_PRIVATE).getInt(
+            "best_record_${scoreKey()}",
+            0
+        )
 
     // saveLastScore Запоминает результат последней сессии для текущего режима
     private fun saveLastScore(score: Int) {
-        getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .edit { putInt("last_score_${scoreKey()}", score) }
+        getSharedPreferences(
+            "stack_attack_prefs",
+            MODE_PRIVATE
+        ).edit { putInt("last_score_${scoreKey()}", score) }
     }
 
     // loadLastScore Возвращает счёт предыдущей игры для текущего режима
     private fun loadLastScore(): Int =
-        getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .getInt("last_score_${scoreKey()}", 0)
+        getSharedPreferences("stack_attack_prefs", MODE_PRIVATE).getInt(
+                "last_score_${scoreKey()}",
+                0
+            )
 
     // onResume Возобновляет работу активности
     override fun onResume() {
@@ -448,21 +450,17 @@ class GameActivity : AppCompatActivity() {
             window.insetsController?.systemBarsBehavior =
                 WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
-            window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            or View.SYSTEM_UI_FLAG_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    )
+            window.decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         }
     }
 
     // loadDifficulty Читает выбранный уровень сложности из настроек
     private fun loadDifficulty(): Difficulty {
-        val name = getSharedPreferences("stack_attack_prefs", MODE_PRIVATE)
-            .getString("difficulty", Difficulty.MEDIUM.name) ?: Difficulty.MEDIUM.name
+        val name = getSharedPreferences("stack_attack_prefs", MODE_PRIVATE).getString(
+                "difficulty",
+                Difficulty.MEDIUM.name
+            ) ?: Difficulty.MEDIUM.name
         return try {
             Difficulty.valueOf(name)
         } catch (_: Exception) {
@@ -470,11 +468,13 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    // scoreKey Возвращает ключ для сохранения очков в зависимости от активного режима:
-    // в кастомном режиме используется отдельный ключ "CUSTOM", иначе — имя сложности
-    private fun scoreKey(): String =
-        if (CustomDifficulty.isCustomMode(this)) "CUSTOM"
-        else currentDifficulty.name
+    // scoreKey Возвращает ключ для сохранения очков в зависимости от активного режима
+    private fun scoreKey(): String = if (CustomDifficulty.isCustomMode(this)) {
+        val custom = CustomDifficulty.load(this)
+        CustomDifficulty.calcDifficultyKey(custom)
+    } else {
+        currentDifficulty.name
+    }
 
     // applyDifficultyToView Применяет стандартную или кастомную сложность к игровому движку
     private fun applyDifficultyToView() {
